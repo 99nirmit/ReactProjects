@@ -14,7 +14,7 @@ const App = () => {
   // Crud Operation will start from here
 
   //1. Create Add Item
-const addItem = (name) => {
+const addItem = (name:string) => {
   // Create a new item with a unique id and the provided name
   const newItem = { id: items.length + 1, name };
 
@@ -25,14 +25,16 @@ const addItem = (name) => {
 // 2. Read (Display Items):
 const displayItems = items.map((item) => (
   <div key={item.id}>
-    <span>{item.id}</span>
+    <span> {item.id} </span>
+    <span> {item.name} </span>
     <button onClick={() => updateItem(item.id)}>Edit</button>
     <button onClick={() => deleteItem(item.id)}>Delete</button>
   </div>
 ));
 
+
 // 3. Update (Edit Item):
-const updateItem = (id) => {
+const updateItem = (id:Number) => {
   const updateName = prompt("Enter the new Name");
   if(updateName){
     const updateItems = items.map((item) => 
@@ -43,16 +45,18 @@ const updateItem = (id) => {
 };
 
 // 4. Delete (Remove Item):
-const deleteItem = (id) => {
+const deleteItem = (id:Number) => {
   const updateItems = items.filter((item) => item.id !== id);
   setItems(updateItems);
 };
 
-const handleSubmit = (e) => {
+const handleSubmit = (e:any) => {
   e.preventDefault();
   addItem(e.target.itemName.value);
 };
-  
+
+// console.log(displayItems)
+
   return( 
   <div className="App">
     {displayItems}
