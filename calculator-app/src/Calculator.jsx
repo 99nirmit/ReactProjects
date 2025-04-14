@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Calculator = () => {
-  const [input, setInput] = useState('');
-  const [result, setResult] = useState('');
+    const [input, setInput] = useState('');
+    const [result, setResult] = useState('');
 
   const handleClick = (value) => {
     setInput((prev) => prev + value);
@@ -21,6 +21,21 @@ const Calculator = () => {
         setResult('Error');
     }
   };
+
+  const handleBackSpace = () => {
+    setInput((prev) => prev.slice(0, -1));
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+        if(e.key === 'Enter') calculate();
+        else if (e.key === 'Back') handleBackSpace();
+        else if (/[\d+\-*/.]/.test(e.key)) handleClick(e.key);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <div className="container mt-5">
@@ -65,10 +80,11 @@ const Calculator = () => {
               ))}
             </div>
           ))}
-
+          
           <button className="btn btn-success" onClick={calculate}>
             =
           </button>
+          <button className="btn btn-warning" onClick={handleBackSpace}> Back</button>
         </div>
       </div>
     </div>
