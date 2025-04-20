@@ -11,17 +11,11 @@ import { useNavigate } from "react-router";
 const JoinCreateChat = () => {
   const [detail, setDetail] = useState({
     roomId: "",
-    roomName: "",
+    userName: "",
   });
 
-  const { roomId, roomName, connected, setRoomId, setRoomName, setConnected } =
+  const { roomId, userName, setRoomId, setCurrentUser, setConnected } =
     useChatContext();
-
-    useEffect (() => {
-      if(!connected){
-        navigate("/");
-      }
-    }, [connected, roomId, roomName])
 
   const navigate = useNavigate();
 
@@ -33,7 +27,7 @@ const JoinCreateChat = () => {
   };
 
   const validateForm = () => {
-    if (detail.roomId === "" || detail.roomName === "") {
+    if (detail.roomId === "" || detail.userName === "") {
       toast.error("Invalid Input");
       return false;
     }
@@ -48,18 +42,18 @@ const JoinCreateChat = () => {
         toast.success("Room Created Successfully !!");
 
         //Join Room
-        setRoomName(detail.roomName);
+        setCurrentUser(detail.userName);
         setRoomId(response.data.roomId);
         setConnected(true);
         navigate("/chat");
+        console.log(response.data.roomId);
         //forward to chat page
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          toast.error("Room Already Created");
+          toast.error("Room Already exits !!");
         } else {
-          toast.error("Something Went Wrong");
+          toast.error("Error in Creating Room");
         }
-        console.error("Error in Creating Room");
       }
     }
   };
@@ -69,21 +63,19 @@ const JoinCreateChat = () => {
       // Join chat
       try {
         const room = await joinRoomChat(detail.roomId);
-        // console.log(room + " Joined Room ");
-
         toast.success("Joined");
-        setRoomName(detail.roomName);
+        setCurrentUser(detail.userName);
         setRoomId(room.roomId);
         setConnected(true);
-        
+
         navigate("/chat");
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          toast.error("Room Already Created");
+          toast.error(error.response.data);
         } else {
-          toast.error("Something Went Wrong");
+          toast.error("Error in Joining Room");
         }
-        console.error("Error in Joining Room");
+        console.log(error);
       }
     }
   };
@@ -105,10 +97,11 @@ const JoinCreateChat = () => {
           </label>
           <input
             onChange={handleFormInputChange}
-            value={detail.roomName}
+            value={detail.userName}
             type="text"
             id="name"
-            name="roomName"
+            name="userName"
+            placeholder="Enter the Name"
             className="w-full dark:bg-gray-600 px-4 py-2 border dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
